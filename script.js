@@ -14,17 +14,39 @@ class Calculator {
         currentOperand = currentOperand.slice(0, -1);
     }
 
-    compute(operand){
-        if (previousOperand === '') return
-        let previousNum = parseFloat(previousOperand);
-        let currentNum = parseFloat(currentOperand);
-        let operandString = String(operand);
-        switch(operandString){
+    compute(operation){
+        let computation;
+        const prev = parseFloat(this.previousOperand);
+        const current = parseFloat(this.currentOperand);
+        if (isNaN(prev) || isNaN(current)) return
+        switch (this.operation) {
             case '+':
-                previousOperand = String(previousNum + currentNum);
+                computation = prev + current
+                break
             case '-':
-                previousOperand = String(previousNum + currentNum);
+                computation = prev - current
+                break
+            case '*':
+                computation = prev * current
+                break
+            case '÷':
+                computation = prev / current
+                break
+            default:
+                return
         }
+        currentOperand = computation
+        operation = undefined;
+    }
+
+    chooseOperation(operation) {
+        if (currentOperand === '') return
+        if (previousOperand !== ''){
+            this.compute(operation);
+        }
+        chosenOperator = operation;
+        previousOperand = currentOperand;
+        currentOperand = '';
     }
 
 
@@ -63,10 +85,7 @@ numberButtons.forEach((button) => {
 
 operationButtons.forEach((button) => {
     button.addEventListener('click', () => {
-        calculator.compute(button.innerHTML);
-        chosenOperator = button.innerHTML;
-        previousOperand = currentOperand;
-        currentOperand = '';
+        calculator.chooseOperation(button.innerHTML);
         calculator.updateDisplay();
     })
 });
